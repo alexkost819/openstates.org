@@ -1,6 +1,7 @@
 import pytest
-from graphapi.tests.utils import populate_db
 from openstates.data.models import Person, VoteEvent
+
+from graphapi.tests.utils import populate_db
 from testutils.factories import create_test_bill
 
 # bill URLs are commented out in public/urls.py (99afeb7)
