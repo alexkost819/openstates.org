@@ -42,6 +42,8 @@
 
     </section>
 
+    {# "as" form yields "" instead of NoReverseMatch while bill views are disabled #}
+    {% url 'bills' state as bills_url %}
     <section class="section">
         <h2 class="heading--large">Bills</h2>
         <div>
@@ -53,7 +55,7 @@
                 {% endfor %}
                 </div>
             </div>
-            <a class="button" href="{% url 'bills' state %}">View more bills</a>
+            {% if bills_url %}<a class="button" href="{{ bills_url }}">View more bills</a>{% endif %}
         </div>
 
         {% if recently_passed_bills %}
@@ -66,7 +68,7 @@
                 {% endfor %}
                 </div>
             </div>
-            <a class="button" href="{% url 'bills' state %}">View more bills</a>
+            {% if bills_url %}<a class="button" href="{{ bills_url }}">View more bills</a>{% endif %}
         </div>
         {% endif %}
     </section>
@@ -82,8 +84,13 @@
             <tbody>
                 {% for session in all_sessions %}
                     <tr>
-                        <td><a href="{% url 'bills' state %}?session={{ session.identifier }}">{{ session.name }}</a></td>
-                        <td><a href="{% url 'bills' state %}?session={{ session.identifier }}">{{ session.bill_count }}</a></td>
+                        {% if bills_url %}
+                        <td><a href="{{ bills_url }}?session={{ session.identifier }}">{{ session.name }}</a></td>
+                        <td><a href="{{ bills_url }}?session={{ session.identifier }}">{{ session.bill_count }}</a></td>
+                        {% else %}
+                        <td>{{ session.name }}</td>
+                        <td>{{ session.bill_count }}</td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
             </tbody>

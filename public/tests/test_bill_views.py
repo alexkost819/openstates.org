@@ -3,6 +3,9 @@ from graphapi.tests.utils import populate_db
 from openstates.data.models import Person, VoteEvent
 from testutils.factories import create_test_bill
 
+# bill URLs are commented out in public/urls.py (99afeb7)
+bill_views_disabled = pytest.mark.skip(reason="bill views disabled")
+
 
 @pytest.mark.django_db
 def setup():
@@ -32,6 +35,7 @@ BILLS_QUERY_COUNT = 7
 ALASKA_BILLS = 12
 
 
+@bill_views_disabled
 @pytest.mark.django_db
 def test_bills_view_basics(client, django_assert_num_queries):
     with django_assert_num_queries(BILLS_QUERY_COUNT):
@@ -48,6 +52,7 @@ def test_bills_view_basics(client, django_assert_num_queries):
     assert len(resp.context["bills"]) == ALASKA_BILLS
 
 
+@bill_views_disabled
 @pytest.mark.django_db
 def test_bills_view_query(client, django_assert_num_queries):
     # title search works
@@ -70,6 +75,7 @@ def test_bills_view_query(client, django_assert_num_queries):
     assert len(resp.context["classifications"]) == 3
 
 
+@bill_views_disabled
 @pytest.mark.django_db
 def test_bills_view_query_bill_id(client, django_assert_num_queries):
     # query by bill id
@@ -84,6 +90,7 @@ def test_bills_view_query_bill_id(client, django_assert_num_queries):
     assert len(resp.context["bills"]) == 1
 
 
+@bill_views_disabled
 @pytest.mark.django_db
 def test_bills_view_chamber(client, django_assert_num_queries):
     with django_assert_num_queries(BILLS_QUERY_COUNT):
@@ -93,6 +100,7 @@ def test_bills_view_chamber(client, django_assert_num_queries):
     assert upper + lower == ALASKA_BILLS
 
 
+@bill_views_disabled
 @pytest.mark.django_db
 def test_bills_view_session(client, django_assert_num_queries):
     with django_assert_num_queries(BILLS_QUERY_COUNT):
@@ -102,6 +110,7 @@ def test_bills_view_session(client, django_assert_num_queries):
     assert b17 + b18 == ALASKA_BILLS
 
 
+@bill_views_disabled
 @pytest.mark.django_db
 def test_bills_view_sponsor(client, django_assert_num_queries):
     amanda = Person.objects.get(name="Amanda Adams")
@@ -109,6 +118,7 @@ def test_bills_view_sponsor(client, django_assert_num_queries):
         assert len(client.get(f"/ak/bills/?sponsor={amanda.id}").context["bills"]) == 2
 
 
+@bill_views_disabled
 @pytest.mark.django_db
 def test_bills_view_classification(client, django_assert_num_queries):
     bills = len(client.get("/ak/bills/?classification=bill").context["bills"])
@@ -126,12 +136,14 @@ def test_bills_view_classification(client, django_assert_num_queries):
     assert bills + resolutions == ALASKA_BILLS
 
 
+@bill_views_disabled
 @pytest.mark.django_db
 def test_bills_view_subject(client, django_assert_num_queries):
     with django_assert_num_queries(BILLS_QUERY_COUNT):
         assert len(client.get("/ak/bills/?subjects=nature").context["bills"]) == 2
 
 
+@bill_views_disabled
 @pytest.mark.django_db
 def test_bills_view_status(client, django_assert_num_queries):
     with django_assert_num_queries(BILLS_QUERY_COUNT):
@@ -141,6 +153,7 @@ def test_bills_view_status(client, django_assert_num_queries):
         )
 
 
+@bill_views_disabled
 @pytest.mark.django_db
 def test_bills_view_sort_latest_action(
     client, django_assert_num_queries, sortable_bills
@@ -169,6 +182,7 @@ def test_bills_view_sort_latest_action(
     assert bills[2].identifier == "B"
 
 
+@bill_views_disabled
 @pytest.mark.django_db
 def test_bills_view_sort_first_action(
     client, django_assert_num_queries, sortable_bills
@@ -199,6 +213,7 @@ def test_bills_view_bad_page(client):
     assert resp.status_code == 404
 
 
+@bill_views_disabled
 @pytest.mark.django_db
 def test_bill_view(client, django_assert_num_queries):
     with django_assert_num_queries(17):
@@ -248,6 +263,7 @@ def test_vote_view(client, django_assert_num_queries):
     assert resp.context["party_votes"][2][1]["no"] == 1
 
 
+@bill_views_disabled
 @pytest.mark.django_db
 def test_bills_feed(client):
     resp = client.get("/ak/bills/feed/")
